@@ -8,13 +8,13 @@ public class ExoplanetCSVReader
 
     public List<PlanetData> ReadCSV()
     {
-        const int maxColumnCount = 5; // Set the limit to the number of columns you want to process
-        const int maxPlanets = 100; // Set the limit to the number of planets you want to create
+        const int maxColumnCount = 5; // Set the limit to the number of columns to process
+        const int maxPlanets = 100; // Set the limit to the number of planets to create
         List<PlanetData> planetDataList = new List<PlanetData>();
         StringReader reader = new StringReader(csvFile.text);
 
         bool headerSkipped = false;
-        int planetCount = 0; // Counter for instantiated planets
+        int planetCount = 0; // Remember to instantiated planets
 
         while (reader.Peek() != -1)
         {
@@ -65,7 +65,7 @@ public class ExoplanetCSVReader
                 }
 
                 planetDataList.Add(data);
-                planetCount++; // Increment the counter
+                planetCount++;
             }
             else
             {
