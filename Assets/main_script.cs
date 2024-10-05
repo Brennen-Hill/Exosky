@@ -56,7 +56,7 @@ public class main_script : MonoBehaviour
 
     private void initialize_particles() {
         particle_system = Instantiate(particle_system_prefab);
-//        particle_system.Emit(star_count);
+        particle_system.Emit(star_count);
         particles = new ParticleSystem.Particle[star_count];
         particle_system.GetParticles(particles);
         int particle_count = 0;
@@ -124,5 +124,9 @@ public class main_script : MonoBehaviour
         last_location = camera.transform.position;
         next_location = new_position + camera_offset;
         percent_travelled = 0;
+    }
+
+    public void show_planets() {
+
     }
 }
