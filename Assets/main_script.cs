@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class main_script : MonoBehaviour
 {
-    public ParticleSystem particle_system;
+    public ParticleSystem particle_system_prefab;
+    private ParticleSystem particle_system;
     private ParticleSystem.Particle[] particles;
 
     // Start is called before the first frame update
     void Start()
     {
+        particle_system = Instantiate(particle_system_prefab);
         Vector3[] locations = {new Vector3(0, 0, 1), new Vector3(1, 0, 0)};
         int num_particles = locations.Length;
         particle_system.Emit(num_particles);
