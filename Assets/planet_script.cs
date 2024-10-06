@@ -15,7 +15,7 @@ public class planet_script : MonoBehaviour
     private float fadeSpeed = 2f; // Speed of the opacity transition
 
     private Vector3 randomRotationAxis; // Random axis for rotation
-    public float rotationSpeed = 5f; // Rotation speed around the axis
+    public float rotationSpeed = 0.00000001f; // Rotation speed around the axis
 
     public string planet_name = "";
 
