@@ -21,6 +21,7 @@ public class main_script : MonoBehaviour
     private ParticleSystem.Particle[] particles;
     private List<GameObject> particle_colliders = new List<GameObject>();
     private Vector3 look;
+    public bool constellationMode = false;
     private Vector3 camera_offset;
     private Vector3 last_location;
     private Vector3 next_location;
@@ -34,6 +35,7 @@ public class main_script : MonoBehaviour
     public bool show_planet_UI = true;
     private float lookSpeed;
     private float size_of_earth;
+    private planet_script earth_script;
     private float clicked_planet_size;
     private int planet_count_initialized;
     private GameObject[] planets;
@@ -67,6 +69,19 @@ public class main_script : MonoBehaviour
         update_planets();
         update_clicked_planet();
         update_camera(); //This must be called after update_clicked_planet
+
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            constellationMode = !constellationMode;
+            if (constellationMode) {
+                set_planet_visibility(false);
+            } else {
+                set_planet_visibility(true);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.H) && !constellationMode && !locked_screen) {
+            moveCamera(new Vector3(0, 0, 0), earth_script);
+        }
     }
 
     private void initialize_particles() {
@@ -115,7 +130,7 @@ public class main_script : MonoBehaviour
     }
 
     private void initialize_planets() {
-        int planet_count_max = 0;
+        int planet_count_max = 1;
         CSVParser.Parse(exoplanet_data, 1, 3, (location) => {
             planet_count_max ++;
         });
@@ -128,13 +143,16 @@ public class main_script : MonoBehaviour
             planet.GetComponent<planet_script>().main = this;
             planets[planet_count_initialized] = planet;//new Vector3(location[1], location[2], location[3]);
             planet_count_initialized += 1;
-            planet_UI_size = 0.015f;
         });
 
+        //Create Earth
         GameObject my_planet = Instantiate(planet_prefab);
         my_planet.transform.position = new Vector3(0,0,0);
         my_planet.GetComponent<planet_script>().main = this;
         clicked_planet = my_planet.GetComponent<planet_script>();
+        earth_script = my_planet.GetComponent<planet_script>();
+        planets[planet_count_initialized] = my_planet;
+        planet_count_initialized ++;
     }
     private void initialize_globals() {
         distance_multiplier = 5; //2000
@@ -148,7 +166,7 @@ public class main_script : MonoBehaviour
         camera = Instantiate(camera_prefab);
         Vector3 look = camera_default_angle;
         camera_offset = new Vector3(0, clicked_planet_size * distance_multiplier / 2 + 0.011f, 0);
-        camera.transform.position = camera_offset + new Vector3(0, clicked_planet_size * distance_multiplier, 0);
+        camera.transform.position = camera_offset;
         next_location = camera_offset;
         percent_travelled = 1;
         percent_travelled_plus = 1;
@@ -159,6 +177,9 @@ public class main_script : MonoBehaviour
     }
     private void update_camera() {
         if(percent_travelled != 1) {
+            if (constellationMode) {
+                constellationMode = false;
+            }
             percent_travelled = Mathf.Min(1, percent_travelled + Time.deltaTime / travel_seconds);
             float eased_percent_travelled = Mathf.Pow((1 - Mathf.Cos(percent_travelled * Mathf.PI))/ 2, travel_power);
             camera.transform.position = Vector3.Lerp(last_location, next_location, eased_percent_travelled);
@@ -170,7 +191,9 @@ public class main_script : MonoBehaviour
                 show_planet_UI = true;
             }
         } else {
-            look = look + new Vector3(-Input.GetAxis("Mouse Y") * lookSpeed, Input.GetAxis("Mouse X") * lookSpeed, 0);
+            if (!constellationMode) {
+                look = look + new Vector3(-Input.GetAxis("Mouse Y") * lookSpeed, Input.GetAxis("Mouse X") * lookSpeed, 0);
+            }
         }
         camera.transform.eulerAngles = look;
 
@@ -249,5 +272,9 @@ public class main_script : MonoBehaviour
 //            float scale = end_scale;
             clicked_planet.transform.localScale = new Vector3(scale, scale, scale);
         }
+    }
+
+    private void set_planet_visibility(bool visible) {
+        show_planet_UI = visible;
     }
 }

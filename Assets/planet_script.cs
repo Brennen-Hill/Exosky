@@ -68,8 +68,8 @@ public class planet_script : MonoBehaviour
 */
     void OnMouseDown() {
         //OnMouseDown is called when the user has pressed the mouse button while over the Collider.
-        Debug.Log("Mouse is down on the element");
-        main.moveCamera(transform.position, this);
-
+        if (!main.constellationMode) {
+            main.moveCamera(transform.position, this);
+        }
     }
 }

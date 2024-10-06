@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class StarConnector : MonoBehaviour
 {
+    public main_script main;
     public Camera mainCamera;
     public GameObject linePrefab; // Prefab containing the LineRenderer component
 
@@ -11,12 +12,12 @@ public class StarConnector : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("START");
+        main = FindObjectOfType<main_script>();
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // Detect left mouse button click
+        if (main.constellationMode && Input.GetMouseButtonDown(0)) // Detect left mouse button click
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
