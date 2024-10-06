@@ -6,7 +6,7 @@ public class main_script : MonoBehaviour
 {
     //Public variables used for initialization
     public ParticleSystem particle_system_prefab;
-    public int star_count = 118218;
+    public int star_count = 100000;
     public int planet_count = 5765;
     public Camera camera_prefab;
     public TextAsset star_data;
