@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - StarCollider
+  - Line
   layers:
   - Default
   - TransparentFX

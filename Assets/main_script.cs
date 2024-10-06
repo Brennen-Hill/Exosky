@@ -77,8 +77,10 @@ public class main_script : MonoBehaviour
             constellationMode = !constellationMode;
             if (constellationMode) {
                 set_planet_visibility(false);
+                Cursor.lockState = CursorLockMode.None;
             } else {
                 set_planet_visibility(true);
+                Cursor.lockState = CursorLockMode.Locked;
             }
         }
 
@@ -204,6 +206,8 @@ public class main_script : MonoBehaviour
         travel_plus_seconds = 0.75f;
         travel_power = 2f;
         lookSpeed = 2f;
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
     private void update_camera() {
         if(percent_travelled != 1) {

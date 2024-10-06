@@ -10,13 +10,15 @@ public class UIScript : MonoBehaviour
     private Button toggleButton;
     private VisualElement controlContainer;
     private bool controlsVisible = true;
+    private bool constellationMode = false;
+    private VisualElement rootVisualElement;
 
     string planetName = "Choose an Exoplanet";
     // Start is called before the first frame update
     void OnEnable()
     {
         // Get the root visual element from the UI Document
-        var rootVisualElement = GetComponent<UIDocument>().rootVisualElement;
+        rootVisualElement = GetComponent<UIDocument>().rootVisualElement;
 
         // Find the Label by name
         planetNameLabel = rootVisualElement.Q<Label>("PlanetName");
@@ -66,7 +68,14 @@ public class UIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            constellationMode = !constellationMode;
+            if (constellationMode) {
+                rootVisualElement.style.display = DisplayStyle.None;
+            } else {
+                rootVisualElement.style.display = DisplayStyle.Flex;
+            }
+        }
     }
 
     public void setHoverPlanetName(string name) {
