@@ -120,7 +120,7 @@ public class main_script : MonoBehaviour
             planet_count_max ++;
         });
         planets = new GameObject[planet_count_max];
-        planet_UI_size = 0.03f;
+        planet_UI_size = 0.015f;
         planet_count_initialized = 0;
         CSVParser.Parse(exoplanet_data, 1, 3, (location) => {
             GameObject planet = Instantiate(planet_prefab);
@@ -128,6 +128,7 @@ public class main_script : MonoBehaviour
             planet.GetComponent<planet_script>().main = this;
             planets[planet_count_initialized] = planet;//new Vector3(location[1], location[2], location[3]);
             planet_count_initialized += 1;
+            planet_UI_size = 0.015f;
         });
 
         GameObject my_planet = Instantiate(planet_prefab);
@@ -166,6 +167,7 @@ public class main_script : MonoBehaviour
             look = Vector3.Lerp(angle_when_clicked, camera_default_angle, percent_travelled_plus); //(percent_travelled - 0.8f) * 5);
             if(percent_travelled_plus == 1) {
                 locked_screen = false;
+                show_planet_UI = true;
             }
         } else {
             look = look + new Vector3(-Input.GetAxis("Mouse Y") * lookSpeed, Input.GetAxis("Mouse X") * lookSpeed, 0);
