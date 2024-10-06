@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ExoplanetCSVReader
 {
-    public TextAsset csvFile; // Assign your CSV file in the Inspector
-
+    public TextAsset csvFile;
+    
     public List<PlanetData> ReadCSV()
     {
         const int maxPlanets = 100; // Set the limit to the number of planets to create
@@ -13,7 +13,7 @@ public class ExoplanetCSVReader
         StringReader reader = new StringReader(csvFile.text);
 
         bool headerSkipped = false;
-        int planetCount = 0; // Remember to instantiated planets
+        int planetCount = 0;
 
         while (reader.Peek() != -1)
         {
@@ -55,7 +55,6 @@ public class ExoplanetCSVReader
                 data.surfacePressure = float.TryParse(values[16], out float surfacePressure) ? surfacePressure : 1f;
                 data.surfaceTemperature = float.TryParse(values[17], out float surfaceTemperature) ? surfaceTemperature : 1f;
                 data.atmosphereComposition = values[18];
-                data.surfaceColor = new Color(Random.value, Random.value, Random.value); // Assign a random color for demonstration
 
                 planetDataList.Add(data);
                 planetCount++;

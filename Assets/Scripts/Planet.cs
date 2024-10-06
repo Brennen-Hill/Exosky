@@ -15,11 +15,7 @@ public class Planet : MonoBehaviour
     public void ApplyData(PlanetData data)
     {
         planetData = data;
-
-        // Set properties on the GameObject based on data
-        // transform.localScale = Vector3.one * data.radius;
-        GetComponent<MeshRenderer>().material.color = data.surfaceColor;
-        // Apply any other properties, like mass or rotation, if necessary
+        
         // Add the PlanetRotation component if not already present
         if (GetComponent<PlanetRotation>() == null)
         {
