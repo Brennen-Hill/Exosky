@@ -133,11 +133,11 @@ PrefabInstance:
     - target: {fileID: -7290114019650883688, guid: 651b57f24198362468d3ad2e5f9e5318, type: 3}
       propertyPath: star_data
       value: 
-      objectReference: {fileID: 4900000, guid: 7de3b1c8c773a3348beef153473bfee8, type: 3}
+      objectReference: {fileID: 4900000, guid: edc4159ec32b0bc44a0f2938aa465399, type: 3}
     - target: {fileID: -7290114019650883688, guid: 651b57f24198362468d3ad2e5f9e5318, type: 3}
       propertyPath: camera_prefab
       value: 
-      objectReference: {fileID: 1514569930559331598, guid: 4363bddb0939320469558bdfd8504292, type: 3}
+      objectReference: {fileID: 4324098153718467020, guid: 70bf9006337c2ca45b9829bc43780dec, type: 3}
     - target: {fileID: -7290114019650883688, guid: 651b57f24198362468d3ad2e5f9e5318, type: 3}
       propertyPath: planet_prefab
       value: 

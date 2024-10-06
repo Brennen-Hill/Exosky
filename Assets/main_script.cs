@@ -28,7 +28,8 @@ public class main_script : MonoBehaviour
     private float percent_travelled;
     private float travel_seconds;
     private float travel_power;
-    private int distance_multiplier;
+    public int distance_multiplier;
+    public bool show_planet_UI = true;
     private float lookSpeed;
     private float size_of_earth;
     private float clicked_planet_size;
@@ -73,12 +74,15 @@ public class main_script : MonoBehaviour
         particles = new ParticleSystem.Particle[total_particle_count];
         particle_system.GetParticles(particles);
         int particle_count = 0;
-        CSVParser.Parse(star_data, 0, 2, (location) => {
+        CSVParser.Parse(star_data, 0, 6, (location) => {
           Vector3 position = new Vector3(location[0] * distance_multiplier, location[1] * distance_multiplier, location[2] * distance_multiplier);
             particles[particle_count].position = position;
+            particles[particle_count].startColor = new Color(location[4], location[5], location[6]);
             //create_particle_collider(position, particle_count);
             particle_count++;
         });
+        Debug.Log("particle_count");
+        Debug.Log(particle_count);
         particle_system.SetParticles(particles);
 
         create_colliders_for_particles();
@@ -130,9 +134,9 @@ public class main_script : MonoBehaviour
 //        my_planet.GetComponent<planet_script>().main = this;
     }
     private void initialize_globals() {
-        distance_multiplier = 20; //2000
+        distance_multiplier = 5; //2000
         size_of_earth = 0.000000002f;
-        clicked_planet_size = 1f;
+        clicked_planet_size = 10f;
 
     }
     private void initialize_camera() {
@@ -173,7 +177,12 @@ public class main_script : MonoBehaviour
             float distance = Vector3.Distance(planets[i].transform.position, camera.transform.position);
 
             // Adjust the scale based on the distance
-            float scale = distance * planet_UI_size;
+            float scale;
+            if(show_planet_UI) {
+                scale = distance * planet_UI_size;
+            } else {
+                scale = size_of_earth;
+            }
             planets[i].transform.localScale = new Vector3(scale, scale, scale);
         }
     }
