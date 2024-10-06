@@ -23,6 +23,7 @@ public class main_script : MonoBehaviour
     private Vector3 look;
     public bool constellationMode = false;
     private Vector3 camera_offset;
+    private float planet_camera_distance;
     private Vector3 last_location;
     private Vector3 next_location;
     private planet_script clicked_planet;
@@ -40,8 +41,8 @@ public class main_script : MonoBehaviour
     private int planet_count_initialized;
     private GameObject[] planets;
     private float planet_UI_size;
-    private float angle_to_current_planet;
-    private Vector3 angle_when_clicked;
+    private Quaternion next_angle;
+    private Quaternion angle_when_clicked;
     private Vector3 camera_default_angle;
     private bool locked_screen;
 
@@ -51,7 +52,7 @@ public class main_script : MonoBehaviour
         initialize_globals();
         initialize_camera();
 
-        initialize_particles();
+//        initialize_particles();
         initialize_planets();
     }
 
@@ -94,11 +95,12 @@ public class main_script : MonoBehaviour
         particles = new ParticleSystem.Particle[total_particle_count];
         particle_system.GetParticles(particles);
         int particle_count = 0;
+        float size;
         CSVParser.Parse(star_data, 0, 6, (location) => {
           Vector3 position = new Vector3(location[0] * distance_multiplier, location[1] * distance_multiplier, location[2] * distance_multiplier);
             particles[particle_count].position = position;
             particles[particle_count].startColor = new Color(location[4], location[5], location[6]);
-            //create_particle_collider(position, particle_count);
+            particles[particle_count].size = location[3];
             particle_count++;
         });
         Debug.Log("particle_count");
@@ -168,6 +170,7 @@ public class main_script : MonoBehaviour
         camera_offset = new Vector3(0, clicked_planet_size * distance_multiplier / 2 + 0.011f, 0);
         camera.transform.position = camera_offset;
         next_location = camera_offset;
+        planet_camera_distance = clicked_planet_size * distance_multiplier / 2 + 0.011f;
         percent_travelled = 1;
         percent_travelled_plus = 1;
         travel_seconds = 4f;
@@ -185,10 +188,13 @@ public class main_script : MonoBehaviour
             camera.transform.position = Vector3.Lerp(last_location, next_location, eased_percent_travelled);
         } else if(percent_travelled_plus != 1) {
             percent_travelled_plus = Mathf.Min(1, percent_travelled_plus + Time.deltaTime / travel_plus_seconds);
-            look = Vector3.Lerp(angle_when_clicked, camera_default_angle, percent_travelled_plus); //(percent_travelled - 0.8f) * 5);
+            Quaternion temp = Quaternion.Lerp(angle_when_clicked, next_angle, percent_travelled_plus);
+            look = temp.eulerAngles; //(percent_travelled - 0.8f) * 5);
+//            look = Vector3.Lerp(angle_when_clicked, camera_default_angle, percent_travelled_plus); //(percent_travelled - 0.8f) * 5);
             if(percent_travelled_plus == 1) {
                 locked_screen = false;
                 show_planet_UI = true;
+                look = camera.transform.eulerAngles;
             }
         } else {
             if (!constellationMode) {
@@ -219,7 +225,7 @@ public class main_script : MonoBehaviour
         if(clicked_planet != planet_scr) {
             clicked_planet.GetComponent<MeshRenderer>().material = unclicked_material;    //        camera.transform.position = new_position + camera_offset;
             last_location = camera.transform.position;
-            next_location = new_position + camera_offset;
+//            next_location = new_position + camera_offset;
             clicked_planet = planet_scr;
             percent_travelled = 0;
             percent_travelled_plus = 0;
@@ -228,14 +234,64 @@ public class main_script : MonoBehaviour
 
             //Get angle to target
             Vector3 directionToTarget = clicked_planet.transform.position - camera.transform.position;
+            Vector3 normalized_direction_to_target = Vector3.Normalize(directionToTarget);
             Vector3 cameraForward = camera.transform.forward;
-            float angle_to_current_planet = Vector3.Angle(cameraForward, directionToTarget);
-            Debug.Log("Angle between camera and object: " + angle_to_current_planet);
-            angle_when_clicked = look;
+            float angle_to_current_planet = Vector3.Angle(cameraForward, normalized_direction_to_target);
+            Vector3 rotation_axis = Vector3.Cross(cameraForward, directionToTarget);
+            Vector3 temp_rotation = camera.transform.eulerAngles;
+            
+            
+            //angle_when_clicked = look;
+//            angle_when_clicked = standardize_angle(rotation_axis + camera.transform.eulerAngles);
+            
+//            next_angle = -(rotation_axis + camera.transform.eulerAngles);
+//            next_angle = rotation_axis + camera.transform.eulerAngles;
+//            next_angle = standardize_angle(next_angle);
+
+
+            Vector3 relativePos = clicked_planet.transform.position - camera.transform.position;
+            // the second argument, upwards, defaults to Vector3.up
+            Quaternion rotation = Quaternion.LookRotation(relativePos, camera.transform.up);
+            angle_when_clicked = Quaternion.Euler(camera.transform.eulerAngles);
+            next_angle = rotation * Quaternion.Euler(0, 180, 0);
+
+            Debug.Log("Real camera angle: " + camera.transform.eulerAngles);
+            Debug.Log("angle_when_clicked: " + angle_when_clicked.eulerAngles);
+            Debug.Log("next_angle: " + next_angle.eulerAngles);
+
+            Vector3 planet_offset = normalized_direction_to_target * planet_camera_distance;
+
+            if(Vector3.Distance(camera.transform.position, new_position + planet_offset) >
+                Vector3.Distance(camera.transform.position, new_position - planet_offset)) {
+                next_location = new_position - planet_offset;
+                } else {
+                    next_location = new_position + planet_offset;
+                }
 
             show_planet_UI = false;
         }
+    }
 
+    private Vector3 standardize_angle(Vector3 vec) {
+        while(vec.x > 180) {
+            vec = vec + new Vector3(-180, 0, 0);
+        }
+        while(vec.x < 0) {
+            vec = vec + new Vector3(180, 0, 0);
+        }
+        while(vec.y > 180) {
+            vec = vec + new Vector3(0, -180, 0);
+        }
+        while(vec.y < 0) {
+            vec = vec + new Vector3(0, 180, 0);
+        }
+        while(vec.z > 180) {
+            vec = vec + new Vector3(0, 0, -180);
+        }
+        while(vec.z < 0) {
+            vec = vec + new Vector3(0, 0, 180);
+        }
+        return vec;
     }
 
     public void update_planets() {
