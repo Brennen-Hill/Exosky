@@ -6,7 +6,7 @@ public class main_script : MonoBehaviour
 {
     //Public variables used for initialization
     public ParticleSystem particle_system_prefab;
-    public int star_count = 118218;
+    public int star_count = 100000;
     public int planet_count = 5765;
     public Camera camera_prefab;
     public TextAsset star_data;
@@ -60,12 +60,12 @@ public class main_script : MonoBehaviour
         particles = new ParticleSystem.Particle[star_count];
         particle_system.GetParticles(particles);
         int particle_count = 0;
-        CSVParser.Parse(star_data, 0, 2, (location) => {
+        CSVParser.Parse(star_data, 0, 6, (location) => {
             particles[particle_count].position = new Vector3(location[0] * distance_multiplier, location[1] * distance_multiplier, location[2] * distance_multiplier);
+            particles[particle_count].startColor = new Color(location[4], location[5], location[6]);
             particle_count ++;
         });
         particle_system.SetParticles(particles);
-        
     }
 
     private void initialize_planets() {
@@ -103,7 +103,7 @@ public class main_script : MonoBehaviour
         camera.transform.position = camera_offset;
         next_location = camera_offset;
         percent_travelled = 1;
-        travel_seconds = 10f;
+        travel_seconds = 0.1f;
         look_speed = 1.5f;
         travel_power = 2f;
         lookSpeed = 1.5f;
