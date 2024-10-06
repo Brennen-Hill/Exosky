@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="MainPanel" style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="GridContainer" style="flex-grow: 1; padding-top: 30px; padding-right: 30px; padding-bottom: 30px; padding-left: 30px; flex-direction: row;">
+            <ui:VisualElement style="flex-grow: 1;">
+                <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                    <ui:VisualElement name="Left" style="flex-grow: 1; flex-direction: column;">
+                        <ui:Label tabindex="-1" text="Planet Name" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PlanetName" style="-unity-font: resource(&apos;Rubik-VariableFont_wght&apos;); -unity-font-definition: initial; -unity-font-style: bold; color: rgb(166, 20, 93); letter-spacing: 5px; margin-bottom: 0; padding-bottom: 0; font-size: 24px;" />
+                        <ui:Label tabindex="-1" text="Mass&#10;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PlanetMass" style="-unity-font: resource(&apos;Rubik-VariableFont_wght&apos;); -unity-font-style: bold; color: rgb(19, 202, 230); letter-spacing: 5px; font-size: 22px; margin-top: 2px; margin-right: 4px; margin-bottom: 2px; margin-left: 2px; padding-top: 0; padding-right: 2px; padding-bottom: 4px; padding-left: 1px; -unity-font-definition: initial;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="Right" style="flex-grow: 1;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
