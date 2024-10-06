@@ -45,10 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particle_system_prefab: {fileID: 6852951202345733656, guid: b471c72b24a995644acc6a0e893aa28a, type: 3}
-  planet_count_max: 5765
+  planet_count_max: 4332
   camera_prefab: {fileID: 4324098153718467020, guid: 70bf9006337c2ca45b9829bc43780dec, type: 3}
   star_data: {fileID: 4900000, guid: edc4159ec32b0bc44a0f2938aa465399, type: 3}
-  exoplanet_data: {fileID: 4900000, guid: 9c42a70a52757c546ae78f9b0961c59e, type: 3}
+  exoplanet_data: {fileID: 4900000, guid: 47a2e9e904e3140fda517d2a3634b6d7, type: 3}
   clicked_material: {fileID: 2100000, guid: 0d3af4b5c8a1a104b86db9bc8527e1c4, type: 2}
   planet_prefab: {fileID: 4189581367175436655, guid: f7cad48f10b22474da4136adc1776144, type: 3}
   collider_prefab: {fileID: 4906959535586169825, guid: 99f74ef31e7904010975f08a7b78b9d9, type: 3}

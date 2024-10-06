@@ -63,6 +63,8 @@ public class StarConnector : MonoBehaviour
         LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
 
         // Set up the LineRenderer properties
+        lineRenderer.startWidth = 0.2f;  // Thickness at the start
+        lineRenderer.endWidth = 0.2f;   
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, start);
         lineRenderer.SetPosition(1, end);

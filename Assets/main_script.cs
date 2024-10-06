@@ -119,7 +119,7 @@ public class main_script : MonoBehaviour
             planet.GetComponent<planet_script>().main = this;
             planets[planet_count_initialized] = planet;//new Vector3(location[1], location[2], location[3]);
             planet_count_initialized += 1;
-            planet_UI_size = 0.03f;
+            planet_UI_size = 0.015f;
         });
 
 
