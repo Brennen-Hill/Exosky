@@ -90,6 +90,11 @@ public class main_script : MonoBehaviour
                 Destroy(line);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.S)) {
+            ScreenCapture.CaptureScreenshot("constellation.png");
+            Debug.Log("Screenshot taken");
+        }
     }
 
     private void initialize_particles() {
