@@ -15,8 +15,10 @@ public class main_script : MonoBehaviour
     //private variables used internally
     private Camera camera;
     public GameObject planet_prefab;
+    public GameObject collider_prefab;
     private ParticleSystem particle_system;
     private ParticleSystem.Particle[] particles;
+    private List<GameObject> particle_colliders = new List<GameObject>();
     private Vector3 look;
     private Vector3 camera_offset;
     private Vector3 last_location;
@@ -61,11 +63,35 @@ public class main_script : MonoBehaviour
         particle_system.GetParticles(particles);
         int particle_count = 0;
         CSVParser.Parse(star_data, 0, 2, (location) => {
-            particles[particle_count].position = new Vector3(location[0] * distance_multiplier, location[1] * distance_multiplier, location[2] * distance_multiplier);
-            particle_count ++;
+          Vector3 position = new Vector3(location[0] * distance_multiplier, location[1] * distance_multiplier, location[2] * distance_multiplier);
+            particles[particle_count].position = position;
+            //create_particle_collider(position, particle_count);
+            particle_count++;
         });
         particle_system.SetParticles(particles);
+
+        create_colliders_for_particles();
         
+    }
+
+        // Create a collider for each particle
+    private void create_colliders_for_particles()
+    {
+        // Loop through particles and create colliders at their positions
+        for (int i = 0; i < particles.Length; i++)
+        {
+            Vector3 position = particles[i].position;
+
+            // Instantiate a collider GameObject at the particle's position
+            GameObject colliderObject = Instantiate(collider_prefab, position, Quaternion.identity);
+            colliderObject.transform.localScale = Vector3.one * 5f; // Set collider size, tweak as needed
+
+            // Add a tag to easily identify the colliders later
+            colliderObject.tag = "StarCollider";
+
+            // Store collider reference for later manipulation if needed
+            particle_colliders.Add(colliderObject);
+        }
     }
 
     private void initialize_planets() {
@@ -103,7 +129,7 @@ public class main_script : MonoBehaviour
         camera.transform.position = camera_offset;
         next_location = camera_offset;
         percent_travelled = 1;
-        travel_seconds = 10f;
+        travel_seconds = 1.5f;
         look_speed = 1.5f;
         travel_power = 2f;
         lookSpeed = 1.5f;
