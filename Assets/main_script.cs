@@ -7,10 +7,11 @@ public class main_script : MonoBehaviour
     //Public variables used for initialization
     public ParticleSystem particle_system_prefab;
     public int star_count = 118218;
-    public int planet_count = 5765;
+    public int planet_count_max = 5765;
     public Camera camera_prefab;
     public TextAsset star_data;
     public TextAsset exoplanet_data;
+    public Material clicked_material;
 
     //private variables used internally
     private Camera camera;
@@ -21,14 +22,18 @@ public class main_script : MonoBehaviour
     private Vector3 camera_offset;
     private Vector3 last_location;
     private Vector3 next_location;
+    private planet_script clicked_planet;
     private float percent_travelled;
     private float travel_seconds;
-    private float look_speed;
     private float travel_power;
     private int distance_multiplier;
     private float lookSpeed;
     private float size_of_earth;
-    private Vector3[] planets;
+    private float clicked_planet_size;
+    private int planet_count_initialized;
+    private GameObject[] planets;
+    private float planet_UI_size;
+    private float angle_to_current_planet;
 
     // Start is called before the first frame update
     void Start()
@@ -51,13 +56,19 @@ public class main_script : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        update_camera();
+        update_planets();
+        update_clicked_planet();
+        update_camera(); //This must be called after update_clicked_planet
     }
 
     private void initialize_particles() {
+        int total_particle_count = 0;
+        CSVParser.Parse(star_data, 0, 2, (location) => {
+            total_particle_count ++;
+        });
         particle_system = Instantiate(particle_system_prefab);
-        particle_system.Emit(star_count);
-        particles = new ParticleSystem.Particle[star_count];
+        particle_system.Emit(total_particle_count);
+        particles = new ParticleSystem.Particle[total_particle_count];
         particle_system.GetParticles(particles);
         int particle_count = 0;
         CSVParser.Parse(star_data, 0, 2, (location) => {
@@ -69,15 +80,16 @@ public class main_script : MonoBehaviour
     }
 
     private void initialize_planets() {
-        planets = new Vector3[planet_count];
-        int sphere_count = 0;
+        planets = new GameObject[planet_count_max];
+        planet_count_initialized = 0;
         CSVParser.Parse(exoplanet_data, 1, 3, (location) => {
             GameObject planet = Instantiate(planet_prefab);
             planet.transform.position = new Vector3(location[1] * distance_multiplier, location[2] * distance_multiplier, location[3] * distance_multiplier);
-            planet.transform.localScale = new Vector3(size_of_earth * distance_multiplier, size_of_earth * distance_multiplier, size_of_earth * distance_multiplier);
+//            planet.transform.localScale = new Vector3(size_of_earth * distance_multiplier, size_of_earth * distance_multiplier, size_of_earth * distance_multiplier);
             planet.GetComponent<planet_script>().main = this;
-            planets[sphere_count] = new Vector3(location[1], location[2], location[3]);
-            sphere_count += 1;
+            planets[planet_count_initialized] = planet;//new Vector3(location[1], location[2], location[3]);
+            planet_count_initialized += 1;
+            planet_UI_size = 0.03f;
         });
 
 
@@ -92,19 +104,19 @@ public class main_script : MonoBehaviour
 //        my_planet.GetComponent<planet_script>().main = this;
     }
     private void initialize_globals() {
-        distance_multiplier = 10;
-        size_of_earth = 0.1f; //0.000000002f;
+        distance_multiplier = 20; //2000
+        size_of_earth = 0.000000002f;
+        clicked_planet_size = 1f;
+
     }
     private void initialize_camera() {
-
         camera = Instantiate(camera_prefab);
         Vector3 look = new Vector3(0,0,0);
-        camera_offset = new Vector3(0, size_of_earth * distance_multiplier + 0.4f, 0);
+        camera_offset = new Vector3(0, clicked_planet_size * distance_multiplier / 2 + 0.4f, 0);
         camera.transform.position = camera_offset;
         next_location = camera_offset;
         percent_travelled = 1;
-        travel_seconds = 10f;
-        look_speed = 1.5f;
+        travel_seconds = 2f;
         travel_power = 2f;
         lookSpeed = 1.5f;
     }
@@ -113,20 +125,44 @@ public class main_script : MonoBehaviour
         camera.transform.eulerAngles = look;
         if(percent_travelled != 1) {
             percent_travelled = Mathf.Min(1, percent_travelled + Time.deltaTime / travel_seconds);
-            float power = 2;
-            float eased_percent_travelled = Mathf.Pow((1 - Mathf.Cos(percent_travelled * Mathf.PI))/ 2, power);
+            float eased_percent_travelled = Mathf.Pow((1 - Mathf.Cos(percent_travelled * Mathf.PI))/ 2, travel_power);
             camera.transform.position = Vector3.Lerp(last_location, next_location, eased_percent_travelled);
         }
     }
 
-    public void moveCamera(Vector3 new_position) {
+    public void moveCamera(Vector3 new_position, planet_script planet_scr) {
 //        camera.transform.position = new_position + camera_offset;
         last_location = camera.transform.position;
         next_location = new_position + camera_offset;
+        clicked_planet = planet_scr;
         percent_travelled = 0;
+        planet_scr.GetComponent<MeshRenderer>().material = clicked_material;
+        //angle_to_current_planet = 
+
     }
 
-    public void show_planets() {
+    public void update_planets() {
+        for(int i = 0; i < planet_count_initialized; i ++) {
+            // Get the distance between the planet and the camera
+            float distance = Vector3.Distance(planets[i].transform.position, camera.transform.position);
 
+            // Adjust the scale based on the distance
+            float scale = distance * planet_UI_size;
+            planets[i].transform.localScale = new Vector3(scale, scale, scale);
+        }
+    }
+    public void update_clicked_planet() {
+        if(clicked_planet) {
+            float distance = Vector3.Distance(clicked_planet.transform.position, camera.transform.position);
+            float start_scale = distance * planet_UI_size;
+            float end_scale = clicked_planet_size * distance_multiplier;
+            float scale = (1 - percent_travelled) * start_scale + (percent_travelled) * end_scale;
+            if(scale < start_scale) {
+//                scale = start_scale;
+            }
+//            float scale = Mathf.Max(, );
+//            float scale = end_scale;
+            clicked_planet.transform.localScale = new Vector3(scale, scale, scale);
+        }
     }
 }

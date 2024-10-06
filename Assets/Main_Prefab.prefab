@@ -46,7 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   particle_system_prefab: {fileID: 6852951202345733656, guid: b471c72b24a995644acc6a0e893aa28a, type: 3}
   star_count: 118218
+  planet_count_max: 5765
   camera_prefab: {fileID: 1514569930559331598, guid: 4363bddb0939320469558bdfd8504292, type: 3}
   star_data: {fileID: 4900000, guid: 7de3b1c8c773a3348beef153473bfee8, type: 3}
   exoplanet_data: {fileID: 4900000, guid: 9c42a70a52757c546ae78f9b0961c59e, type: 3}
+  clicked_material: {fileID: 2100000, guid: 0d3af4b5c8a1a104b86db9bc8527e1c4, type: 2}
   planet_prefab: {fileID: 4189581367175436655, guid: f7cad48f10b22474da4136adc1776144, type: 3}
