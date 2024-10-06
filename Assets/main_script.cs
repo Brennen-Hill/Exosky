@@ -82,6 +82,14 @@ public class main_script : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H) && !constellationMode && !locked_screen) {
             moveCamera(new Vector3(0, 0, 0), earth_script);
         }
+
+        if (Input.GetKeyDown(KeyCode.L)) {
+            GameObject[] lines;
+            lines = GameObject.FindGameObjectsWithTag("Line");
+            foreach (GameObject line in lines) {
+                Destroy(line);
+            }
+        }
     }
 
     private void initialize_particles() {
