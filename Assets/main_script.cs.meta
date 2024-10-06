@@ -3,7 +3,13 @@ guid: 285a7d472b95dd04ea54e52ef35ef8b4
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - particle_system_prefab: {instanceID: 0}
+  - camera_prefab: {instanceID: 0}
+  - star_data: {instanceID: 0}
+  - exoplanet_data: {instanceID: 0}
+  - planet_prefab: {instanceID: 0}
+  - collider_prefab: {fileID: 4906959535586169825, guid: 99f74ef31e7904010975f08a7b78b9d9, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
