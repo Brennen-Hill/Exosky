@@ -22,7 +22,6 @@ public class main_script : MonoBehaviour
     private List<GameObject> particle_colliders = new List<GameObject>();
     private Vector3 look;
     public bool constellationMode = false;
-    private Vector3 camera_offset;
     private float planet_camera_distance;
     private Vector3 last_location;
     private Vector3 next_location;
@@ -45,6 +44,7 @@ public class main_script : MonoBehaviour
     private Quaternion angle_when_clicked;
     private Vector3 camera_default_angle;
     private bool locked_screen;
+    private Vector3 next_planet_location;
 
     // Start is called before the first frame update
     void Start()
@@ -52,7 +52,7 @@ public class main_script : MonoBehaviour
         initialize_globals();
         initialize_camera();
 
-//        initialize_particles();
+        initialize_particles();
         initialize_planets();
     }
 
@@ -70,7 +70,10 @@ public class main_script : MonoBehaviour
         update_planets();
         update_clicked_planet();
         update_camera(); //This must be called after update_clicked_planet
+        update_commands();
+    }
 
+    private void update_commands() {
         if (Input.GetKeyDown(KeyCode.Space)) {
             constellationMode = !constellationMode;
             if (constellationMode) {
@@ -83,6 +86,30 @@ public class main_script : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H) && !constellationMode && !locked_screen) {
             moveCamera(new Vector3(0, 0, 0), earth_script);
         }
+
+        if(!locked_screen) {
+            float orbitSpeed = 100f;
+            Vector3 offset = (camera.transform.position - next_planet_location).normalized * planet_camera_distance;
+
+            float horizontalInput = Input.GetAxis("Horizontal"); // Left (-1) and Right (+1) arrow keys
+            float verticalInput = Input.GetAxis("Vertical"); // Up (+1) and Down (-1) arrow keys
+
+            // Calculate the rotation around the Y axis (sideways orbit)
+            if (horizontalInput != 0)
+            {
+                Quaternion horizontalRotation = Quaternion.AngleAxis(horizontalInput * orbitSpeed * Time.deltaTime, Vector3.up);
+                offset = horizontalRotation * offset;
+            }
+
+            // Calculate the rotation around the X axis (forward/backward orbit)
+            if (verticalInput != 0)
+            {
+                Quaternion verticalRotation = Quaternion.AngleAxis(verticalInput * orbitSpeed * Time.deltaTime, transform.right);
+                offset = verticalRotation * offset;
+            }
+            camera.transform.position = next_planet_location + offset;
+        }
+
     }
 
     private void initialize_particles() {
@@ -103,8 +130,6 @@ public class main_script : MonoBehaviour
             particles[particle_count].size = location[3];
             particle_count++;
         });
-        Debug.Log("particle_count");
-        Debug.Log(particle_count);
         particle_system.SetParticles(particles);
 
         create_colliders_for_particles();
@@ -151,6 +176,7 @@ public class main_script : MonoBehaviour
         GameObject my_planet = Instantiate(planet_prefab);
         my_planet.transform.position = new Vector3(0,0,0);
         my_planet.GetComponent<planet_script>().main = this;
+        next_planet_location = new Vector3(0,0,0);
         clicked_planet = my_planet.GetComponent<planet_script>();
         earth_script = my_planet.GetComponent<planet_script>();
         planets[planet_count_initialized] = my_planet;
@@ -159,7 +185,7 @@ public class main_script : MonoBehaviour
     private void initialize_globals() {
         distance_multiplier = 5; //2000
         size_of_earth = 0.000000002f;
-        clicked_planet_size = 1f;
+        clicked_planet_size = 0.02f;
 //        Cursor.lockState = CursorLockMode.Locked;
     }
     private void initialize_camera() {
@@ -167,10 +193,9 @@ public class main_script : MonoBehaviour
         camera_default_angle = new Vector3(270, 0, 0);
         camera = Instantiate(camera_prefab);
         Vector3 look = camera_default_angle;
-        camera_offset = new Vector3(0, clicked_planet_size * distance_multiplier / 2 + 0.011f, 0);
-        camera.transform.position = camera_offset;
-        next_location = camera_offset;
-        planet_camera_distance = clicked_planet_size * distance_multiplier / 2 + 0.011f;
+        planet_camera_distance = clicked_planet_size * distance_multiplier / 2 + 0.0100000001f;
+        camera.transform.position = new Vector3(0, planet_camera_distance, 0);
+        next_location = new Vector3(0, planet_camera_distance, 0);
         percent_travelled = 1;
         percent_travelled_plus = 1;
         travel_seconds = 4f;
@@ -188,9 +213,8 @@ public class main_script : MonoBehaviour
             camera.transform.position = Vector3.Lerp(last_location, next_location, eased_percent_travelled);
         } else if(percent_travelled_plus != 1) {
             percent_travelled_plus = Mathf.Min(1, percent_travelled_plus + Time.deltaTime / travel_plus_seconds);
-            Quaternion temp = Quaternion.Lerp(angle_when_clicked, next_angle, percent_travelled_plus);
-            look = temp.eulerAngles; //(percent_travelled - 0.8f) * 5);
-//            look = Vector3.Lerp(angle_when_clicked, camera_default_angle, percent_travelled_plus); //(percent_travelled - 0.8f) * 5);
+            Quaternion lerping_quaternion = Quaternion.Lerp(angle_when_clicked, next_angle, percent_travelled_plus);
+            look = lerping_quaternion.eulerAngles;
             if(percent_travelled_plus == 1) {
                 locked_screen = false;
                 show_planet_UI = true;
@@ -202,30 +226,12 @@ public class main_script : MonoBehaviour
             }
         }
         camera.transform.eulerAngles = look;
-
-//        if(percent_travelled == 1) {
-//            
-//        } else { //if(percent_travelled >= 0.8) {
-//            //look = Vector3.Lerp(angle_when_clicked, camera_default_angle, percent_travelled); //(percent_travelled - 0.8f) * 5);
-//        }
-
-        
-
-
-//            //Get angle to target
-//            Vector3 directionToTarget = clicked_planet.transform.position - camera.transform.position;
-//            Vector3 cameraForward = camera.transform.forward
-//            float angle_to_current_planet = Vector3.Angle(cameraForward, directionToTarget);
-//            Debug.Log("Angle between camera and object: " + angle_to_current_planet);
-
-
     }
 
     public void moveCamera(Vector3 new_position, planet_script planet_scr) {
         if(clicked_planet != planet_scr) {
-            clicked_planet.GetComponent<MeshRenderer>().material = unclicked_material;    //        camera.transform.position = new_position + camera_offset;
+            clicked_planet.GetComponent<MeshRenderer>().material = unclicked_material;
             last_location = camera.transform.position;
-//            next_location = new_position + camera_offset;
             clicked_planet = planet_scr;
             percent_travelled = 0;
             percent_travelled_plus = 0;
@@ -235,32 +241,12 @@ public class main_script : MonoBehaviour
             //Get angle to target
             Vector3 directionToTarget = clicked_planet.transform.position - camera.transform.position;
             Vector3 normalized_direction_to_target = Vector3.Normalize(directionToTarget);
-            Vector3 cameraForward = camera.transform.forward;
-            float angle_to_current_planet = Vector3.Angle(cameraForward, normalized_direction_to_target);
-            Vector3 rotation_axis = Vector3.Cross(cameraForward, directionToTarget);
-            Vector3 temp_rotation = camera.transform.eulerAngles;
-            
-            
-            //angle_when_clicked = look;
-//            angle_when_clicked = standardize_angle(rotation_axis + camera.transform.eulerAngles);
-            
-//            next_angle = -(rotation_axis + camera.transform.eulerAngles);
-//            next_angle = rotation_axis + camera.transform.eulerAngles;
-//            next_angle = standardize_angle(next_angle);
-
-
             Vector3 relativePos = clicked_planet.transform.position - camera.transform.position;
-            // the second argument, upwards, defaults to Vector3.up
             Quaternion rotation = Quaternion.LookRotation(relativePos, camera.transform.up);
             angle_when_clicked = Quaternion.Euler(camera.transform.eulerAngles);
             next_angle = rotation * Quaternion.Euler(0, 180, 0);
-
-            Debug.Log("Real camera angle: " + camera.transform.eulerAngles);
-            Debug.Log("angle_when_clicked: " + angle_when_clicked.eulerAngles);
-            Debug.Log("next_angle: " + next_angle.eulerAngles);
-
             Vector3 planet_offset = normalized_direction_to_target * planet_camera_distance;
-
+            next_planet_location = new_position;
             if(Vector3.Distance(camera.transform.position, new_position + planet_offset) >
                 Vector3.Distance(camera.transform.position, new_position - planet_offset)) {
                 next_location = new_position - planet_offset;
@@ -312,20 +298,7 @@ public class main_script : MonoBehaviour
     public void update_clicked_planet() {
         if(clicked_planet) {
             float distance = Vector3.Distance(clicked_planet.transform.position, camera.transform.position);
-//            float start_scale = distance * planet_UI_size;
-//            float start_scale = size_of_earth;
-            //float start_scale = clicked_planet_size * distance_multiplier;
-            //float end_scale = clicked_planet_size * distance_multiplier;
-            //start_scale == end_scale =
-            //float start_scale = clicked_planet_size * distance_multiplier;
-            //float end_scale = clicked_planet_size * distance_multiplier;
-            //float scale = (1 - percent_travelled) * start_scale + (percent_travelled) * end_scale;
             float scale = clicked_planet_size * distance_multiplier;
-//            if(scale < start_scale) {
-//                scale = start_scale;
-//            }
-//            float scale = Mathf.Max(, );
-//            float scale = end_scale;
             clicked_planet.transform.localScale = new Vector3(scale, scale, scale);
         }
     }
