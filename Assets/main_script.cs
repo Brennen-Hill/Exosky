@@ -6,6 +6,7 @@ public class main_script : MonoBehaviour
 {
     //Public variables used for initialization
     public ParticleSystem particle_system_prefab;
+    public GameObject main_ui_prefab;
 //    public int star_count = 118218;
     public Camera camera_prefab;
     public TextAsset star_data;
@@ -14,6 +15,7 @@ public class main_script : MonoBehaviour
     public Material unclicked_material;
 
     //private variables used internally
+    private UIScript ui_script;
     private Camera camera;
     public GameObject planet_prefab;
     public GameObject collider_prefab;
@@ -49,6 +51,7 @@ public class main_script : MonoBehaviour
     void Start()
     {
         initialize_globals();
+        initialize_UI();
         initialize_camera();
 
         initialize_particles();
@@ -150,18 +153,29 @@ public class main_script : MonoBehaviour
         planets = new GameObject[planet_count_max];
         planet_UI_size = 0.015f;
         planet_count_initialized = 0;
-        CSVParser.Parse(exoplanet_data, 1, 3, (location) => {
-            GameObject planet = Instantiate(planet_prefab);
-            planet.transform.position = new Vector3(location[1] * distance_multiplier, location[2] * distance_multiplier, location[3] * distance_multiplier);
-            planet.GetComponent<planet_script>().main = this;
-            planets[planet_count_initialized] = planet;//new Vector3(location[1], location[2], location[3]);
-            planet_count_initialized += 1;
-        });
+        List<Dictionary<string,object>> planet_data = CSVReader.Read(exoplanet_data);
+        foreach(Dictionary<string,object> location in planet_data)
+        {
+            if (location["X"] is float xValue && location["Y"] is float yValue && location["Z"] is float zValue)
+            {
+                GameObject planet = Instantiate(planet_prefab);
+                planet.transform.position = new Vector3((float)location["X"] * distance_multiplier, (float)location["Y"] * distance_multiplier, (float)location["Z"] * distance_multiplier);
+                planet.GetComponent<planet_script>().planet_name = (string)location["Planet Name"];
+                planet.GetComponent<planet_script>().main = this;
+                planet.GetComponent<planet_script>().main_ui = ui_script;
+                planets[planet_count_initialized] = planet;//new Vector3(location[1], location[2], location[3]);
+                planet_count_initialized += 1;
+            }
+
+            planet_UI_size = 0.015f;
+        }
 
         //Create Earth
         GameObject my_planet = Instantiate(planet_prefab);
         my_planet.transform.position = new Vector3(0,0,0);
         my_planet.GetComponent<planet_script>().main = this;
+        my_planet.GetComponent<planet_script>().main_ui = ui_script;
+        my_planet.GetComponent<MeshRenderer>().material = clicked_material;
         clicked_planet = my_planet.GetComponent<planet_script>();
         earth_script = my_planet.GetComponent<planet_script>();
         planets[planet_count_initialized] = my_planet;
@@ -172,6 +186,9 @@ public class main_script : MonoBehaviour
         size_of_earth = 0.000000002f;
         clicked_planet_size = 1f;
 //        Cursor.lockState = CursorLockMode.Locked;
+    }
+    private void initialize_UI() {
+        ui_script = Instantiate(main_ui_prefab).GetComponent<UIScript>();
     }
     private void initialize_camera() {
         locked_screen = false;
@@ -184,7 +201,7 @@ public class main_script : MonoBehaviour
         percent_travelled = 1;
         percent_travelled_plus = 1;
         travel_seconds = 4f;
-        travel_plus_seconds = 2f;
+        travel_plus_seconds = 0.75f;
         travel_power = 2f;
         lookSpeed = 2f;
     }
