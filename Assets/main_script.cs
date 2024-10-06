@@ -84,7 +84,7 @@ public class main_script : MonoBehaviour
 
             // Instantiate a collider GameObject at the particle's position
             GameObject colliderObject = Instantiate(collider_prefab, position, Quaternion.identity);
-            colliderObject.transform.localScale = Vector3.one * 5f; // Set collider size, tweak as needed
+            colliderObject.transform.localScale = Vector3.one * 1f; // Set collider size, tweak as needed
 
             // Add a tag to easily identify the colliders later
             colliderObject.tag = "StarCollider";
