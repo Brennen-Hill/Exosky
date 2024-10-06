@@ -6,6 +6,8 @@ public class planet_script : MonoBehaviour
 {
     public main_script main;
 
+    public UIScript main_ui;
+
     private Material sphereMaterialInstance; // Unique material instance for this object
     private Color originalColor;
     private float originalAlpha;
@@ -13,7 +15,9 @@ public class planet_script : MonoBehaviour
     private float fadeSpeed = 2f; // Speed of the opacity transition
 
     private Vector3 randomRotationAxis; // Random axis for rotation
-    public float rotationSpeed = 5f; // Rotation speed around the axis
+    public float rotationSpeed = 0.00000001f; // Rotation speed around the axis
+
+    public string planet_name = "";
 
     void Start()
     {
@@ -42,14 +46,15 @@ public class planet_script : MonoBehaviour
 
     void OnMouseEnter()
     {
-        // When the mouse enters, set the target alpha to half transparency
         targetAlpha = originalAlpha * 5f;
+        main_ui.setHoverPlanetName(planet_name);
     }
 
     void OnMouseExit()
     {
         // When the mouse exits, reset the target alpha to the original alpha value
         targetAlpha = originalAlpha;
+        main_ui.clearHoverPlanetName();
     }
 
 
@@ -69,7 +74,9 @@ public class planet_script : MonoBehaviour
     void OnMouseDown() {
         //OnMouseDown is called when the user has pressed the mouse button while over the Collider.
         if (!main.constellationMode) {
+            Debug.Log("Mouse is down on the element");
             main.moveCamera(transform.position, this);
+            main_ui.setPlanetName(planet_name);
         }
     }
 }

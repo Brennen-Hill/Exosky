@@ -13,7 +13,6 @@ public class PlanetData : ScriptableObject
     public float equilibriumTemperature; // The temperature of the planet assuming a simplified atmosphere (pl_eqt)
     public float starTemperature; // Temperature of the host star (st_teff)
     public float starRadius; // Radius of the host star (st_rad)
-    public Color surfaceColor; // Surface color of the planet
     public float albedo; // Reflectivity of the exoplanet's surface (pl_albedo)
     public float density; // Density of the exoplanet in g/cm³ (pl_dens)
     public float gravity; // Surface gravity of the exoplanet in cm/s² (pl_grav)

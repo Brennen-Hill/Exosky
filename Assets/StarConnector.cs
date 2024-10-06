@@ -61,6 +61,7 @@ public class StarConnector : MonoBehaviour
     {
         // Instantiate a line GameObject from the prefab
         GameObject lineObject = Instantiate(linePrefab);
+        lineObject.tag = "Line";
         LineRenderer lineRenderer = lineObject.GetComponent<LineRenderer>();
 
         // Set up the LineRenderer properties

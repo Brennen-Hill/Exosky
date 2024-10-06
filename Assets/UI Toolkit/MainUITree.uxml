@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/MainUIStyles.uss?fileID=7433441132597879392&amp;guid=0aec782b9d097444780038c3328394a0&amp;type=3#MainUIStyles" />
+    <ui:Label tabindex="-1" text="Choose a Exoplanet" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PlanetName" class="text" style="-unity-font: resource(&apos;Rubik-VariableFont_wght&apos;); font-size: 40px; -unity-text-outline-width: 0; height: 56px; width: 270px; -unity-text-align: middle-left; position: absolute; left: 0; top: 0; margin-left: 5px;" />
+    <ui:GroupBox name="control-container" style="height: 315px; width: 203px; position: absolute; bottom: 0; left: 0; -unity-text-align: lower-left; flex-direction: column-reverse;">
+        <ui:Button text="Close Controls" parse-escape-sequences="true" display-tooltip-when-elided="true" name="control-toggle" style="padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; background-color: rgb(157, 219, 236); -unity-font-style: bold; font-size: 12px; height: 27px; width: 121px; margin-left: 0;" />
+        <ui:Label tabindex="-1" text="Click planets: move there" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" />
+        <ui:Label tabindex="-1" text="Draw mode off" parse-escape-sequences="true" display-tooltip-when-elided="true" class="subheadings text" />
+        <ui:Label tabindex="-1" text="Click stars: draw constellations&#10;L: clear constellations" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" />
+        <ui:Label tabindex="-1" text="Draw Mode" parse-escape-sequences="true" display-tooltip-when-elided="true" class="subheadings text" />
+        <ui:Label tabindex="-1" text="Space: toggle draw mode&#10;H: go home&#10;S: screenshot" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" style="margin-left: 0; padding-left: 0;" />
+    </ui:GroupBox>
+    <ui:Label tabindex="-1" text="+" parse-escape-sequences="true" display-tooltip-when-elided="true" style="position: absolute; left: 50%; top: 50%; translate: -50% -50%; -unity-text-align: middle-center; color: rgb(255, 255, 255); font-size: 50px;" />
+</ui:UXML>
