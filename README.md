@@ -2,6 +2,9 @@
 ## Final Project
 https://shoebills-in-space.web.app/
 
+## Winner at Space Apps Chicago Hackathon
+The NASA Space Apps Hackathon is the largest global hackathon in the world. We designed our solution in the Chicago location, the largest location in the United States this year. We were one of three groups to win at NASA Space Apps Chicago. We were noted for having the best project presentation. Now we are waiting to see what happens at the global level.
+
 ## High-Level Summary
 We developed an interactive 3D starfield based on 5500 exoplanets and half a million stars from NASA and ESA databases. A user can draw constellations and travel to real-life exoplanets to see how the stars — and their constellations — change with perspective. The user can also take pictures of the stars as viewed from an exoplanet as well as any constellations they drew.
 
