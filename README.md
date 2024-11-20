@@ -2,6 +2,11 @@
 ## Final Project
 https://shoebills-in-space.web.app/
 
+## Honorable Mention by NASA
+Our project has been awarded an Honorable Mention at NASA Space Apps!
+
+Out of 93,520 participants and 15,444 teams worldwide, only 19 projects earned this recognition from NASA Space Apps’ global judges for their ingenuity and creativity. We’re thrilled that our project stood out in such an incredible pool of talent!
+
 ## Winner at Space Apps Chicago Hackathon
 The NASA Space Apps Hackathon is the largest global hackathon in the world. We designed our solution in the Chicago location, the largest location in the United States this year. We were one of three groups to win at NASA Space Apps Chicago. We were noted for having the best project presentation. Now we are waiting to see what happens at the global level.
 
